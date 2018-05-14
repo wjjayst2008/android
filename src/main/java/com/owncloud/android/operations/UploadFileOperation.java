@@ -541,7 +541,8 @@ public class UploadFileOperation extends SyncOperation {
             } catch (FileNotFoundException e) {
                 // this basically means that the file is on SD card
                 // try to copy file to temporary dir if it doesn't exist
-                String temporalPath = FileStorageUtils.getTemporalPath(mAccount.name) + mFile.getRemotePath();
+                String temporalPath = FileStorageUtils.getInternalTemporalPath(mAccount.name, mContext) +
+                        mFile.getRemotePath();
                 mFile.setStoragePath(temporalPath);
                 temporalFile = new File(temporalPath);
 
@@ -780,7 +781,8 @@ public class UploadFileOperation extends SyncOperation {
             } catch (FileNotFoundException e) {
                 // this basically means that the file is on SD card
                 // try to copy file to temporary dir if it doesn't exist
-                String temporalPath = FileStorageUtils.getTemporalPath(mAccount.name) + mFile.getRemotePath();
+                String temporalPath = FileStorageUtils.getInternalTemporalPath(mAccount.name, mContext) +
+                        mFile.getRemotePath();
                 mFile.setStoragePath(temporalPath);
                 temporalFile = new File(temporalPath);
 
@@ -898,7 +900,7 @@ public class UploadFileOperation extends SyncOperation {
         RemoteOperationResult result = null;
 
         if (mLocalBehaviour == FileUploader.LOCAL_BEHAVIOUR_COPY && !mOriginalStoragePath.equals(expectedPath)) {
-            String temporalPath = FileStorageUtils.getTemporalPath(mAccount.name) + mFile.getRemotePath();
+            String temporalPath = FileStorageUtils.getInternalTemporalPath(mAccount.name, mContext) + mFile.getRemotePath();
             mFile.setStoragePath(temporalPath);
             File temporalFile = new File(temporalPath);
 
@@ -937,19 +939,11 @@ public class UploadFileOperation extends SyncOperation {
         switch (mLocalBehaviour) {
             case FileUploader.LOCAL_BEHAVIOUR_FORGET:
             default:
-                String temporalPath = FileStorageUtils.getTemporalPath(mAccount.name) + mFile.getRemotePath();
-                if (mOriginalStoragePath.equals(temporalPath)) {
-                    // delete local file is was pre-copied in temporary folder (see .ui.helpers.UriUploader)
-                    temporalFile = new File(temporalPath);
-                    temporalFile.delete();
-                }
                 mFile.setStoragePath("");
                 saveUploadedFile(client);
                 break;
 
             case FileUploader.LOCAL_BEHAVIOUR_DELETE:
-                Log_OC.d(TAG, "Delete source file");
-
                 originalFile.delete();
                 getStorageManager().deleteFileInMediaScan(originalFile.getAbsolutePath());
                 saveUploadedFile(client);
@@ -983,6 +977,11 @@ public class UploadFileOperation extends SyncOperation {
                 FileDataStorageManager.triggerMediaScan(newFile.getAbsolutePath());
                 break;
         }
+
+        // delete temporal file
+        String temporalPath = FileStorageUtils.getInternalTemporalPath(mAccount.name, mContext) + mFile.getRemotePath();
+        temporalFile = new File(temporalPath);
+        temporalFile.delete();
     }
 
     /**
