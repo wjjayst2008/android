@@ -204,7 +204,7 @@ public class UsersAndGroupsSearchProvider extends ContentProvider {
                         icon = R.drawable.ic_group;
                         dataUri = Uri.withAppendedPath(groupBaseUri, shareWith);
                     } else if (ShareType.FEDERATED.getValue() == type && federatedShareAllowed) {
-                        icon = R.drawable.ic_user;
+                        icon = R.drawable.user;
                         if (userName.equals(shareWith)) {
                             displayName = getContext().getString(R.string.share_remote_clarification, userName);
                         } else {
@@ -215,7 +215,7 @@ public class UsersAndGroupsSearchProvider extends ContentProvider {
                         dataUri = Uri.withAppendedPath(remoteBaseUri, shareWith);
                     } else if (ShareType.USER.getValue() == type) {
                         displayName = userName;
-                        icon = R.drawable.ic_user;
+                        icon = R.drawable.user;
                         dataUri = Uri.withAppendedPath(userBaseUri, shareWith);
                     } else if (ShareType.EMAIL.getValue() == type) {
                         icon = R.drawable.ic_email;
