@@ -39,6 +39,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -56,9 +57,8 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.owncloud.android.MainApp;
 import com.owncloud.android.R;
 import com.owncloud.android.authentication.AccountUtils;
@@ -868,18 +868,17 @@ public abstract class DrawerActivity extends ToolbarActivity implements DisplayU
                     });
 
 
-                    SimpleTarget target = new SimpleTarget<Drawable>() {
+                    SimpleTarget<Drawable> target = new SimpleTarget<Drawable>() {
                         @Override
-                        public void onResourceReady(Drawable resource, GlideAnimation glideAnimation) {
+                        public void onResourceReady(@NonNull Drawable resource,
+                                                    @Nullable Transition<? super Drawable> transition) {
                             Drawable test = resource.getCurrent();
                             test.setBounds(0, 0, size, size);
                             mQuotaTextLink.setCompoundDrawablesWithIntrinsicBounds(test, null, null, null);
                         }
 
                         @Override
-                        public void onLoadFailed(Exception e, Drawable errorDrawable) {
-                            super.onLoadFailed(e, errorDrawable);
-
+                        public void onLoadFailed(@Nullable Drawable errorDrawable) {
                             Drawable test = errorDrawable.getCurrent();
                             test.setBounds(0, 0, size, size);
 
@@ -887,7 +886,8 @@ public abstract class DrawerActivity extends ToolbarActivity implements DisplayU
                         }
                     };
 
-                    DisplayUtils.downloadIcon(this, firstQuota.iconUrl, target, R.drawable.ic_link_grey, size, size);
+                    DisplayUtils.downloadIcon(this, firstQuota.iconUrl, target, R.drawable.ic_link_grey,
+                            R.drawable.ic_link_grey);
 
                 } else {
                     mQuotaTextLink.setVisibility(View.GONE);
@@ -1019,20 +1019,21 @@ public abstract class DrawerActivity extends ToolbarActivity implements DisplayU
                         MENU_ITEM_EXTERNAL_LINK + link.id, MENU_ORDER_EXTERNAL_LINKS, link.name)
                         .setCheckable(true).getItemId();
 
-                MenuSimpleTarget target = new MenuSimpleTarget<Drawable>(id) {
+                MenuSimpleTarget<Drawable> target = new MenuSimpleTarget<Drawable>(id) {
                     @Override
-                    public void onResourceReady(Drawable resource, GlideAnimation glideAnimation) {
+                    public void onResourceReady(@NonNull Drawable resource,
+                                                @Nullable Transition<? super Drawable> transition) {
                         setExternalLinkIcon(getIdMenuItem(), resource, greyColor);
                     }
 
                     @Override
-                    public void onLoadFailed(Exception e, Drawable errorDrawable) {
-                        super.onLoadFailed(e, errorDrawable);
+                    public void onLoadFailed(@Nullable Drawable errorDrawable) {
                         setExternalLinkIcon(getIdMenuItem(), errorDrawable, greyColor);
                     }
                 };
 
-                DisplayUtils.downloadIcon(this, link.iconUrl, target, R.drawable.ic_link_grey, size, size);
+                // TODO NPE?!
+                // DisplayUtils.downloadIcon(this, link.iconUrl, target, R.drawable.ic_link_grey, R.drawable.ic_link_grey);
             }
 
             setDrawerMenuItemChecked(mCheckedMenuItem);
@@ -1076,16 +1077,17 @@ public abstract class DrawerActivity extends ToolbarActivity implements DisplayU
                     // use url 
                     if (URLUtil.isValidUrl(background) || background.isEmpty()) {
                         // background image
-                        SimpleTarget target = new SimpleTarget<Drawable>() {
+                        SimpleTarget<Drawable> target = new SimpleTarget<Drawable>() {
                             @Override
-                            public void onResourceReady(Drawable resource, GlideAnimation glideAnimation) {
+                            public void onResourceReady(@NonNull Drawable resource,
+                                                        @Nullable Transition<? super Drawable> transition) {
                                 Drawable[] drawables = {new ColorDrawable(primaryColor), resource};
                                 LayerDrawable layerDrawable = new LayerDrawable(drawables);
                                 setNavigationHeaderBackground(layerDrawable, navigationHeader);
                             }
 
                             @Override
-                            public void onLoadFailed(Exception e, Drawable errorDrawable) {
+                            public void onLoadFailed(@Nullable Drawable errorDrawable) {
                                 Drawable[] drawables = {new ColorDrawable(primaryColor), errorDrawable};
                                 LayerDrawable layerDrawable = new LayerDrawable(drawables);
                                 setNavigationHeaderBackground(layerDrawable, navigationHeader);
@@ -1100,13 +1102,15 @@ public abstract class DrawerActivity extends ToolbarActivity implements DisplayU
                             backgroundResource = R.drawable.background;
                         }
 
-                        Glide.with(this)
-                                .load(background)
-                                .centerCrop()
-                                .placeholder(backgroundResource)
-                                .error(backgroundResource)
-                                .crossFade()
-                                .into(target);
+                        DisplayUtils.downloadImage(background, backgroundResource, backgroundResource, target, this);
+
+//                        Glide.with(this)
+//                                .load(background)
+//                                .centerCrop()
+//                                .placeholder(backgroundResource)
+//                                .error(backgroundResource)
+//                                .crossFade()
+//                                .into(target);
                     } else {
                         // plain color
                         setNavigationHeaderBackground(new ColorDrawable(primaryColor), navigationHeader);
