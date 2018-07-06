@@ -114,9 +114,7 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserVi
                     holder.avatar.setImageResource(R.drawable.ic_email);
                 }
             } else {
-                holder.avatar.setTag(share.getShareWith());
-                DisplayUtils.setAvatar(account, share.getShareWith(), this, avatarRadiusDimension,
-                        context.getResources(), holder.avatar, context);
+                DisplayUtils.setAvatar(account, share.getShareWith(), context, holder.avatar, avatarRadiusDimension);
             }
             holder.name.setText(name);
 
