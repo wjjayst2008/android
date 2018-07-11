@@ -1033,8 +1033,7 @@ public abstract class DrawerActivity extends ToolbarActivity implements DisplayU
                     }
                 };
 
-                // TODO NPE?!
-                // DisplayUtils.downloadIcon(this, link.iconUrl, target, R.drawable.ic_link_grey, R.drawable.ic_link_grey);
+                DisplayUtils.downloadIcon(this, link.iconUrl, target, R.drawable.ic_link_grey, R.drawable.ic_link_grey);
             }
 
             setDrawerMenuItemChecked(mCheckedMenuItem);
