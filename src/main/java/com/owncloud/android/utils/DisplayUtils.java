@@ -645,7 +645,7 @@ public class DisplayUtils {
                 .placeholder(placeholder)
                 .fitCenter()
                 .error(error)
-                .listener(new SvgSoftwareLayerSetter<>())
+                .listener(new SvgSoftwareLayerSetter())
                 .load(url)
                 .into(imageView);
     }
@@ -657,7 +657,7 @@ public class DisplayUtils {
                 .load(url)
                 .placeholder(placeholder)
                 .error(error)
-                .listener(new SvgSoftwareLayerSetter<>())
+                .listener(new SvgSoftwareLayerSetter())
                 .into((SimpleTarget) imageView);
     }
 
