@@ -46,6 +46,7 @@ import com.owncloud.android.lib.resources.status.OCCapability;
 import com.owncloud.android.services.OperationsService;
 import com.owncloud.android.ui.TextDrawable;
 import com.owncloud.android.ui.dialog.ExpirationDatePickerDialogFragment;
+import com.owncloud.android.ui.dialog.NoteDialogFragment;
 import com.owncloud.android.ui.fragment.util.SharingMenuHelper;
 import com.owncloud.android.utils.DisplayUtils;
 import com.owncloud.android.utils.ThemeUtils;
@@ -193,6 +194,8 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserVi
 
         MenuItem reshareItem = menu.findItem(R.id.action_can_reshare);
 
+        MenuItem sendNoteItem = menu.findItem(R.id.action_share_send_note);
+
         if (isReshareForbidden(share)) {
             reshareItem.setVisible(false);
         }
@@ -230,6 +233,8 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserVi
 
         SharingMenuHelper.setupExpirationDateMenuItem(
                 menu.findItem(R.id.action_expiration_date), share.getExpirationDate(), context.getResources());
+
+        sendNoteItem.setVisible(capabilities.getVersion().isNoteOnShareSupported());
     }
 
     private boolean isEditOptionsAvailable(OCShare share) {
@@ -317,12 +322,13 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserVi
             }
             case R.id.action_expiration_date: {
                 ExpirationDatePickerDialogFragment dialog = ExpirationDatePickerDialogFragment.newInstance(share, -1);
-                dialog.show(
-                        fragmentManager,
-                        ExpirationDatePickerDialogFragment.DATE_PICKER_DIALOG
-                );
+                dialog.show(fragmentManager, ExpirationDatePickerDialogFragment.DATE_PICKER_DIALOG);
                 return true;
             }
+            case R.id.action_share_send_note:
+                NoteDialogFragment dialog = NoteDialogFragment.newInstance(share);
+                dialog.show(fragmentManager, NoteDialogFragment.NOTE_FRAGMENT);
+                return true;
             default:
                 return true;
         }
@@ -399,6 +405,8 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserVi
                                      boolean canEditChange,
                                      boolean canEditDelete);
 
+        void updateNoteToShare(OCShare share, String note);
+        
         /**
          * show a snackbar that this feature is not supported by ownCloud.
          */
