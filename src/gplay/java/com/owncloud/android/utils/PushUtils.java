@@ -51,6 +51,7 @@ import com.owncloud.android.lib.resources.notifications.models.PushResponse;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.io.FileUtils;
 
+import java.lang.Exception;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -397,7 +398,7 @@ public final class PushUtils {
                 if (oldPrivateKeyFile.exists()) {
                     try {
                         FileStorageUtils.moveFile(oldPrivateKeyFile, privateKeyFile);
-                    } catch (IOException e) {
+                    } catch (Exception e) {
                         Log.e(TAG, "Failed to move old private key to new location");
                     }
                 }
@@ -405,7 +406,7 @@ public final class PushUtils {
                 if (oldPublicKeyFile.exists()) {
                     try {
                         FileStorageUtils.moveFile(oldPublicKeyFile, publicKeyFile);
-                    } catch (IOException e) {
+                    } catch (Exception e) {
                         Log.e(TAG, "Failed to move old public key to new location");
                     }
                 }
