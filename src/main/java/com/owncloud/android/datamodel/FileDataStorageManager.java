@@ -1212,7 +1212,7 @@ public class FileDataStorageManager {
             share.setUserId(c.getLong(c.getColumnIndex(ProviderTableMeta.OCSHARES_USER_ID)));
             share.setIdRemoteShared(c.getLong(c.getColumnIndex(ProviderTableMeta.OCSHARES_ID_REMOTE_SHARED)));
             share.setIsPasswordProtected(c.getInt(c.getColumnIndex(ProviderTableMeta.OCSHARES_IS_PASSWORD_PROTECTED)) == 1);
-            share.setNote((c.getString(c.getColumnIndex(ProviderTableMeta.OCSHARES_NOTE))));
+            share.setNote(c.getString(c.getColumnIndex(ProviderTableMeta.OCSHARES_NOTE)));
         }
         return share;
     }
