@@ -90,7 +90,7 @@ public class NoteDialogFragment extends DialogFragment implements DialogInterfac
 
         // Inflate the layout for the dialog
         LayoutInflater inflater = getActivity().getLayoutInflater();
-        View view = inflater.inflate(R.layout.note_dialog, null);
+        View view = inflater.inflate(R.layout.note_dialog, null, false);
 
         unbinder = ButterKnife.bind(this, view);
 
